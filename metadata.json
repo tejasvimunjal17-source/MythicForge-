@@ -1,0 +1,6 @@
+{
+  "name": "Fantasy Character Generator",
+  "description": "A fantasy role-playing character generator that creates unique adventurers with random names, classes, attributes, backgrounds, and gear.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
