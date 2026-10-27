@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme {
+  --font-title: "Cinzel Decorative", "Cinzel", Georgia, serif;
+  --font-display: "Cinzel", Georgia, serif;
+  --font-body: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: #0b0907;
+  color: #e8decb;
+}
+
+.font-fantasy {
+  font-family: var(--font-display);
+}
+
+.font-fantasy-title {
+  font-family: var(--font-title);
+}
+
+/* Alchemical workshop panel styling */
+.alchemist-panel {
+  background-color: rgba(22, 17, 14, 0.88);
+  border: 1px solid rgba(138, 105, 68, 0.35);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.7), 0 0 15px -3px rgba(184, 134, 11, 0.08);
+}
+
+.alchemist-panel-nested {
+  background-color: rgba(14, 11, 9, 0.75);
+  border: 1px solid rgba(110, 84, 54, 0.3);
+}
+
+/* Metallic bronze / gold glow button */
+.alchemist-btn-primary {
+  background: linear-gradient(135deg, #c9971c 0%, #e2b747 45%, #b58013 100%);
+  color: #1a1207;
+  border: 1px solid #e8c872;
+  box-shadow: 0 4px 14px rgba(184, 134, 11, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.alchemist-btn-primary:hover {
+  background: linear-gradient(135deg, #d8a424 0%, #f0c95e 45%, #c68e17 100%);
+  box-shadow: 0 6px 20px rgba(184, 134, 11, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+
+/* Scrollbar aesthetic for alchemical ledger */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #140f0c;
+}
+::-webkit-scrollbar-thumb {
+  background: #4a3826;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #73573c;
+}
