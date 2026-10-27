@@ -1,5 +1,5 @@
 import React from 'react';
-import { Volume2, VolumeX, Dice5 } from 'lucide-react';
+import { Volume2, VolumeX, Dice5, Download } from 'lucide-react';
 
 interface TopBarProps {
   soundEnabled: boolean;
@@ -78,6 +78,17 @@ export const TopBar: React.FC<TopBarProps> = ({
 
         {/* Zone 3: 1 primary action area */}
         <div className="flex items-center gap-3 shrink-0">
+          <a
+            href="/api/download-project-zip"
+            download="fantasy-character-generator.zip"
+            className="p-2 text-[#9e8d77] hover:text-[#ffd97d] transition-colors rounded-lg hover:bg-[#201813] border border-transparent hover:border-[#4d3a28] cursor-pointer flex items-center gap-1.5 text-xs"
+            title="Download full project source code as ZIP"
+            aria-label="Export project ZIP"
+          >
+            <Download className="w-4 h-4 text-[#d4af37]" />
+            <span className="hidden lg:inline text-[#c4b59d]">Export ZIP</span>
+          </a>
+
           <button
             onClick={onToggleSound}
             title={soundEnabled ? 'Mute alchemical acoustics' : 'Unmute alchemical acoustics'}

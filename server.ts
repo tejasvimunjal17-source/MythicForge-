@@ -65,6 +65,16 @@ Requirements:
   }
 });
 
+// Endpoint to download the complete source-code ZIP archive
+app.get('/api/download-project-zip', (_req, res) => {
+  const zipPath = 'fantasy-character-generator.zip';
+  res.download(zipPath, 'fantasy-character-generator.zip', (err) => {
+    if (err && !res.headersSent) {
+      res.status(404).json({ error: 'Project archive not ready yet' });
+    }
+  });
+});
+
 async function startServer() {
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({

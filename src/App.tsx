@@ -66,8 +66,6 @@ export default function App() {
 
   const handleGenerate = useCallback(() => {
     setIsGenerating(true);
-
-    // Audio cues
     soundEffects.playDiceRoll();
 
     // Generate new character via application logic
@@ -76,13 +74,11 @@ export default function App() {
       forcedRace: selectedRace !== 'ANY' ? selectedRace : undefined,
     });
 
-    setTimeout(() => {
-      soundEffects.playClassChime(newChar.characterClass);
-      setCharacter(newChar);
-      setRoster((prev) => [newChar, ...prev.slice(0, 24)]); // Keep last 25 characters
-      setIsGenerating(false);
-      setActiveSection('generator');
-    }, 150);
+    soundEffects.playClassChime(newChar.characterClass);
+    setCharacter(newChar);
+    setRoster((prev) => [newChar, ...prev.slice(0, 24)]); // Keep last 25 characters
+    setIsGenerating(false);
+    setActiveSection('generator');
   }, [selectedClass, selectedRace]);
 
   const handleToggleFavorite = (id: string) => {
@@ -97,7 +93,13 @@ export default function App() {
   const handleSelectCharacter = (char: Character) => {
     setCharacter(char);
     setActiveSection('generator');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+      try {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch {
+        window.scrollTo(0, 0);
+      }
+    }
   };
 
   const handleClearRoster = () => {
@@ -148,28 +150,36 @@ export default function App() {
   }, []);
 
   const handleSaveToDeck = useCallback((charToSave: Character) => {
-    // Check if character already exists in deck (prevent accidental duplicates)
-    const isDuplicate = deck.some(
-      (c) => c.id === charToSave.id || (c.name === charToSave.name && c.createdAt === charToSave.createdAt)
-    );
+    let savedSuccessfully = false;
 
-    if (isDuplicate) {
-      showToast(`"${charToSave.name}" is already in My Deck!`, 'info');
-      return;
+    setDeck((prev) => {
+      // Check if character already exists in deck (prevent accidental duplicates)
+      const isDuplicate = prev.some(
+        (c) => c.id === charToSave.id || (c.name === charToSave.name && c.createdAt === charToSave.createdAt)
+      );
+
+      if (isDuplicate) {
+        showToast(`"${charToSave.name}" is already in My Deck!`, 'info');
+        return prev;
+      }
+
+      // Add deep clone with all stats (Health, Mana, Strength) explicitly preserved
+      const savedCard: Character = {
+        ...charToSave,
+        health: charToSave.health || charToSave.hp,
+        mana: charToSave.mana,
+        strength: charToSave.strength,
+      };
+
+      savedSuccessfully = true;
+      return [savedCard, ...prev];
+    });
+
+    if (savedSuccessfully) {
+      soundEffects.playClassChime(charToSave.characterClass);
+      showToast(`Saved "${charToSave.name}" to My Deck!`, 'success');
     }
-
-    // Add deep clone with all stats (Health, Mana, Strength) explicitly preserved
-    const savedCard: Character = {
-      ...charToSave,
-      health: charToSave.health || charToSave.hp,
-      mana: charToSave.mana,
-      strength: charToSave.strength,
-    };
-
-    soundEffects.playClassChime(charToSave.characterClass);
-    setDeck((prev) => [savedCard, ...prev]);
-    showToast(`Saved "${charToSave.name}" to My Deck!`, 'success');
-  }, [deck, showToast]);
+  }, [showToast]);
 
   const handleRemoveFromDeck = useCallback((id: string) => {
     setDeck((prev) => prev.filter((c) => c.id !== id));
@@ -189,7 +199,13 @@ export default function App() {
     setCharacter(newChar);
     setRoster((prev) => [newChar, ...prev.slice(0, 24)]);
     setActiveSection('generator');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+      try {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch {
+        window.scrollTo(0, 0);
+      }
+    }
   };
 
   return (
@@ -279,6 +295,15 @@ export default function App() {
                 backstoryError={backstoryError}
                 onSaveToDeck={handleSaveToDeck}
                 isInDeck={deck.some((c) => c.id === character.id || (c.name === character.name && c.createdAt === character.createdAt))}
+              />
+
+              {/* Section Titled "My Deck" */}
+              <MyDeck
+                deck={deck}
+                activeCharacterId={character.id}
+                onSelectCharacter={handleSelectCharacter}
+                onRemoveFromDeck={handleRemoveFromDeck}
+                onClearDeck={handleClearDeck}
               />
 
               {/* Quick Session Roster Strip */}
@@ -394,9 +419,20 @@ export default function App() {
               <span aria-hidden="true" className="text-[#523e2a]">/</span>
               <span className="text-[#8c7b66] font-sans text-xs">Fantasy Role-Playing Companion</span>
             </p>
-            <p className="text-[#8c7b66]">
-              Aged parchment, warm bronze & celestial humors · Fully responsive
-            </p>
+            <div className="flex flex-col sm:flex-row items-center gap-3 text-xs">
+              <span className="text-[#8c7b66]">
+                Aged parchment, warm bronze & celestial humors · Fully responsive
+              </span>
+              <span aria-hidden="true" className="hidden sm:inline text-[#523e2a]">·</span>
+              <a
+                href="/api/download-project-zip"
+                download="fantasy-character-generator.zip"
+                className="text-[#d4af37] hover:text-[#ffd97d] transition-colors underline font-medium"
+                title="Download complete source code as a ZIP archive"
+              >
+                Export Source Code (ZIP)
+              </a>
+            </div>
           </div>
         </footer>
       </div>

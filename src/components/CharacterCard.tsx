@@ -147,25 +147,21 @@ ${character.backstory}
             <button
               onClick={() => onSaveToDeck?.(character)}
               id="save-to-deck-btn"
+              data-testid="save-to-deck-btn"
               className={`min-h-[44px] px-4 py-2 rounded-xl border transition-all flex items-center gap-1.5 text-xs font-bold cursor-pointer active:scale-95 shadow-md ${
                 isInDeck
-                  ? 'bg-[#d4af37]/20 border-[#d4af37] text-[#ffd97d]'
+                  ? 'bg-[#d4af37]/25 border-[#d4af37] text-[#ffd97d]'
                   : 'alchemist-btn-primary'
               }`}
-              title={isInDeck ? 'Character is saved in My Deck' : 'Save character to My Deck'}
+              title={isInDeck ? `"${character.name}" is already saved in My Deck` : `Save "${character.name}" to My Deck`}
               aria-label="Save to Deck"
             >
               {isInDeck ? (
-                <>
-                  <Check className="w-4 h-4 text-[#ffd97d]" />
-                  <span>Saved to Deck</span>
-                </>
+                <Check className="w-4 h-4 text-[#ffd97d]" />
               ) : (
-                <>
-                  <Layers className="w-4 h-4" />
-                  <span>Save to Deck</span>
-                </>
+                <Layers className="w-4 h-4" />
               )}
+              <span>Save to Deck</span>
             </button>
 
             <button
@@ -217,13 +213,13 @@ ${character.backstory}
                   Health
                 </span>
                 <span className="font-mono font-bold text-[#fecaca] tabular-nums text-sm">
-                  {character.health} <span className="text-[10px] text-[#f87171]/80">HP</span>
+                  {character.health ?? character.hp} <span className="text-[10px] text-[#f87171]/80">HP</span>
                 </span>
               </div>
               <div className="w-full bg-[#2a1715] h-2 rounded-full overflow-hidden border border-[#5c1d1d]/50">
                 <div
                   className="bg-gradient-to-r from-[#dc2626] to-[#ef4444] h-full rounded-full transition-all duration-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]"
-                  style={{ width: `${Math.min(100, Math.max(15, (character.health / 150) * 100))}%` }}
+                  style={{ width: `${Math.min(100, Math.max(15, (((character.health ?? character.hp) || 100) / 150) * 100))}%` }}
                 />
               </div>
             </div>
@@ -319,7 +315,7 @@ ${character.backstory}
               </div>
             )}
 
-            {/* Clearly visible "Generate Backstory" Button (Requirement #1, #9, #10) */}
+            {/* Action button: Generate Backstory */}
             <div className="pt-1 border-t border-[#4d3a28]/40">
               <button
                 type="button"
